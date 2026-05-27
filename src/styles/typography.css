@@ -9,6 +9,10 @@
     @apply prose max-w-none;
   }
 
+  .app-prose :where(p) {
+    @apply my-6;
+  }
+
   /* =========================================
      Headings
      ========================================= */
@@ -22,11 +26,11 @@
   }
 
   .app-prose :where(h2) {
-    @apply mt-14 mb-5 text-3xl;
+    @apply mt-16 mb-5 text-3xl leading-tight;
   }
 
   .app-prose :where(h3) {
-    @apply mt-10 mb-4 text-2xl;
+    @apply mt-12 mb-4 text-2xl leading-snug;
   }
 
   .app-prose :where(h4) {
@@ -108,7 +112,7 @@
      ========================================= */
 
   .app-prose :where(pre) {
-    @apply border-border overflow-x-auto rounded-2xl border text-sm;
+    @apply border-border overflow-x-auto rounded-xl border text-sm leading-7;
   }
 
   .app-prose :where(pre):focus-visible {
@@ -187,7 +191,9 @@
     @apply outline-accent outline-2 outline-dashed outline-offset-4;
   }
 
-  .post-content > p:first-of-type::first-letter {
-    @apply text-accent font-content float-left me-3 mt-1 text-6xl leading-none font-semibold;
+  @media (min-width: 768px) {
+    .post-content > p:first-of-type::first-letter {
+      @apply text-accent font-content float-left me-3 mt-1 text-6xl leading-none font-semibold;
+    }
   }
 }

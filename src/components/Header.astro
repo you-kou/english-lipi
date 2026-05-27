@@ -17,8 +17,8 @@ function isActive(url: string) {
 }
 ---
 
-<header class="site-header sticky top-0 z-50 h-30 sm:h-20 border-b border-border backdrop-blur bg-background/50">
-  <div class="app-layout flex flex-wrap items-center gap-x-12 justify-between gap-y-6 py-4">
+<header class="site-header sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
+  <div class="app-layout flex min-h-16 flex-wrap items-center justify-between gap-x-8 gap-y-3 py-3 sm:flex-nowrap">
     <!-- Logo / Title -->
     <a href="/" class="flex items-center gap-3">
       {
@@ -38,7 +38,7 @@ function isActive(url: string) {
 
     <!-- Navigation -->
     <nav
-      class="order-3 flex w-full flex-wrap items-center gap-x-5 gap-y-2 font-ui md:order-0 md:w-auto"
+      class="order-3 flex w-full flex-wrap items-center gap-x-5 gap-y-1 font-ui sm:order-none sm:w-auto"
     >
       {
         siteConfig.navigation.map((item) => (
@@ -60,7 +60,7 @@ function isActive(url: string) {
           <button
             type="button"
             id="theme-toggle"
-            class="bg-muted/70 text-muted-foreground hover:bg-muted hover:text-accent inline-flex h-10 min-w-10 items-center gap-2 rounded-full border border-border px-3 text-sm transition-[background-color,color,transform] duration-150"
+            class="bg-muted/70 text-muted-foreground hover:bg-muted hover:text-accent inline-flex h-9 min-w-9 items-center gap-2 rounded-full border border-border px-3 text-sm transition-[background-color,color,transform] duration-150"
             aria-label="Toggle theme"
           >
             <span class="hidden items-center gap-2 dark:flex">
@@ -78,26 +78,6 @@ function isActive(url: string) {
     </div>
   </div>
 </header>
-
-<script>
-  const themeToggle = document.querySelector("#theme-toggle");
-
-  if (themeToggle) {
-    themeToggle.addEventListener("click", () => {
-      const currentTheme =
-        document.documentElement.getAttribute("data-theme") ?? "light";
-
-      const nextTheme = currentTheme === "dark" ? "light" : "dark";
-
-      document.documentElement.setAttribute("data-theme", nextTheme);
-      document.documentElement.style.colorScheme = nextTheme;
-
-      localStorage.setItem("theme", nextTheme);
-
-      window.__theme = { value: nextTheme };
-    });
-  }
-</script>
 
 <style>
   .site-header {
@@ -157,5 +137,16 @@ function isActive(url: string) {
     0% {opacity: 0;}
     2%,
     100% {opacity: 1;}
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-header,
+    .site-header::after {
+      animation: none;
+    }
+
+    .site-header::after {
+      opacity: 0;
+    }
   }
 </style>

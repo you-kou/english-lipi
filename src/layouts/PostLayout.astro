@@ -169,16 +169,19 @@ const structuredData = generatePostSchema(post);
       {
         post.data.cover && (
           <div class="overflow-hidden rounded-2xl pt-4">
-            <img
-              src={
-                typeof post.data.cover ===
+	            <img
+	              src={
+	                typeof post.data.cover ===
                 "string"
                   ? post.data.cover
                   : post.data.cover.src
-              }
-              alt={post.data.title}
-              class="aspect-3/2 w-full object-cover outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10"
-            />
+	              }
+	              alt={post.data.title}
+	              decoding="async"
+	              fetchpriority="high"
+	              loading="eager"
+	              class="aspect-3/2 w-full object-cover outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10"
+	            />
           </div>
         )
       }
@@ -186,23 +189,23 @@ const structuredData = generatePostSchema(post);
     </header>
   </Fragment>
 
-  <aside data-pagefind-body>
+    <article data-pagefind-body>
     <meta data-pagefind-meta="title[content]" content={title} />
     <meta data-pagefind-sort="date[content]" content={published.toISOString()} />
-    <meta data-pagefind-filter="collection[content]" content={post.collection} />
+	    <meta data-pagefind-filter="collection[content]" content={post.collection} />
     {tags?.map((tag) => (
       <meta data-pagefind-filter="tag[content]" content={tag} />
     ))}
     <!-- Content -->
-    <div class="app-prose post-content" role="article">
-      <slot />
-    </div>
+	    <div class="app-prose post-content">
+	      <slot />
+	    </div>
 
     <section>
       <SharePost title={post.data.title} />
       <div class="divider" />
     </section>
-  </aside>
+	  </article>
 
   <Fragment slot="navigation">
     <PostNavigation
