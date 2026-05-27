@@ -155,12 +155,7 @@ function formatArchiveDate(date: Date) {
 
   @media (max-width: 767px) {
     .timeline {
-      @apply relative space-y-10 ps-6;
-    }
-
-    .timeline::before {
-      content: "";
-      @apply bg-border absolute top-0 bottom-0 left-0 w-px;
+      @apply relative space-y-10;
     }
 
     .timeline article {
@@ -171,8 +166,9 @@ function formatArchiveDate(date: Date) {
       @apply relative mb-2 text-left pe-0;
     }
 
+    /* Hide the rail dot on mobile — no left rail */
     .timeline article > div:first-child span {
-      @apply -left-7 top-1.5 right-auto;
+      @apply hidden;
     }
 
     .timeline article > div:last-child h2 {
