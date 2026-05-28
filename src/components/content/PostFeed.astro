@@ -1,33 +1,9 @@
 ---
 import { type Post } from "@/utils/content";
 import SectionHeader from "@/components/SectionHeader.astro";
-import PostFeedItem, {
-  type PostFeedVariant,
-  type VariantConfig,
-} from "./PostFeedItem.astro";
+import PostFeedItem, { type PostFeedVariant } from "./PostFeedItem.astro";
 
 export type { PostFeedVariant };
-
-const variantConfigs: Record<PostFeedVariant, VariantConfig> = {
-  featured: {
-    showDescription: true,
-    showReadingTime: true,
-    titleClass: "font-content text-3xl leading-snug font-medium md:text-4xl",
-    contentSpacingClass: "pb-16",
-  },
-  timeline: {
-    showDescription: false,
-    showReadingTime: false,
-    titleClass: "font-content text-2xl leading-snug font-medium",
-    contentSpacingClass: "pb-10 sm:pl-4",
-  },
-  archive: {
-    showDescription: false,
-    showReadingTime: false,
-    titleClass: "font-content text-base leading-snug",
-    contentSpacingClass: "py-1.5",
-  },
-};
 
 type Props = {
   posts: Post[];
@@ -42,8 +18,6 @@ const {
   sectionTitle,
   sectionDesc,
 } = Astro.props;
-
-const config = variantConfigs[variant];
 ---
 
 <section>
@@ -75,42 +49,3 @@ const config = variantConfigs[variant];
     </ul>
   )}
 </section>
-
-<!-- <style>
-  @reference "../../styles/global.css";
-
-  /* Desktop: two-column grid with vertical rail */
-  @media (min-width: 768px) {
-    .timeline {
-      display: grid;
-      grid-template-columns: 6rem 1fr;
-      column-gap: 2rem;
-      position: relative;
-    }
-
-    .timeline::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 7rem;
-      width: 1px;
-      background: var(--border);
-    }
-  }
-
-  /* Mobile: intimate vertical stack, no rail */
-  @media (max-width: 767px) {
-    .timeline {
-      @apply space-y-10;
-    }
-
-    .timeline-date {
-      @apply mb-2;
-    }
-
-    .timeline-dot {
-      @apply hidden;
-    }
-  }
-</style> -->
