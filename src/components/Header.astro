@@ -1,9 +1,5 @@
 ---
 import siteConfig from "@/site.config";
-
-import SunIcon from "@/assets/sun.svg";
-import MoonIcon from "@/assets/moon.svg";
-
 import { getAssetPath } from "@/utils/url";
 
 const pathname = Astro.url.pathname;
@@ -17,8 +13,8 @@ function isActive(url: string) {
 }
 ---
 
-<header class="site-header sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
-  <div class="app-layout flex min-h-16 flex-wrap items-center justify-between gap-x-8 gap-y-3 py-3 sm:flex-nowrap">
+<header class="site-header sticky overflow-visible top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
+  <div class="app-layout flex min-h-16 items-center justify-between py-3">
     <!-- Logo / Title -->
     <a href="/" class="flex items-center gap-3">
       {
@@ -29,70 +25,84 @@ function isActive(url: string) {
             class="h-8 w-auto"
           />
         ) : (
-          <span class="text-foreground font-ui lowercase text-2xl font-semibold tracking-tight">
+          <span class="text-foreground font-display text-2xl font-semibold tracking-tight">
             {siteConfig.title}
           </span>
         )
       }
     </a>
 
-    <!-- Navigation (hidden on mobile until toggled) -->
-    <nav
-      id="mobile-nav"
-      class="order-3 hidden w-full flex-wrap items-center gap-x-5 gap-y-2 font-ui pb-3 sm:flex sm:order-0 sm:w-auto sm:pb-0"
-    >
+    <div class="nav-right flex flex-row items-center gap-4 ">
+      <!-- Desktop Navigation -->
+      <nav class="hidden sm:flex items-center gap-6 font-content italic text-sm">
+        {
+          siteConfig.navigation.map((item) => (
+            <a
+              href={item.url}
+              class="nav-link"
+              aria-current={isActive(item.url) ? "page" : undefined}
+            >
+              {item.title}
+            </a>
+          ))
+        }
+      </nav>
+      
+      <!-- Vertical divider, desktop only -->
+      <div class="hidden sm:block h-3.5 w-px bg-border shrink-0 mx-1" aria-hidden="true"></div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-4 font-ui">
+        <!-- <pagefind-modal-trigger compact hide-shortcut></pagefind-modal-trigger> -->
+
+        {
+          siteConfig.showThemeToggle && (
+            <button
+              type="button"
+              id="theme-toggle"
+              class="theme-pill"
+              aria-label="Toggle theme"
+            />
+          )
+        }
+
+        <!-- Mobile menu toggle -->
+        <button
+          id="menu-toggle"
+          type="button"
+          class="sm:hidden inline-flex h-8 w-8 items-center justify-center rounded border border-border bg-transparent text-muted-foreground hover:text-accent transition-colors duration-150"
+          aria-label="Toggle navigation"
+          aria-expanded="false"
+          aria-controls="mobile-drawer"
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+            <line x1="1" y1="3.5" x2="13" y2="3.5" />
+            <line x1="1" y1="7" x2="13" y2="7" />
+            <line x1="1" y1="10.5" x2="13" y2="10.5" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Mobile Drawer -->
+  <div
+    id="mobile-drawer"
+    class="mobile-drawer sm:hidden"
+    aria-hidden="true"
+  >
+    <div class="border-t border-border">
       {
         siteConfig.navigation.map((item) => (
           <a
             href={item.url}
-            class="nav-link transition-colors duration-200",
+            class="mobile-nav-item" 
             aria-current={isActive(item.url) ? "page" : undefined}
           >
-            {item.title}
+            <span>{item.title}</span>
+            <span class="mobile-nav-arrow" aria-hidden="true">›</span>
           </a>
         ))
       }
-    </nav>
-
-    <!-- Actions -->
-    <div class="ml-auto flex items-center gap-2 font-ui">
-      <pagefind-modal-trigger compact hide-shortcut></pagefind-modal-trigger>
-      {
-        siteConfig.showThemeToggle && (
-          <button
-            type="button"
-            id="theme-toggle"
-            class="bg-muted/70 text-muted-foreground hover:bg-muted hover:text-accent inline-flex h-9 min-w-9 items-center gap-2 rounded-md border border-border px-3 text-sm transition-[background-color,color,transform] duration-150"
-            aria-label="Toggle theme"
-          >
-            <span class="hidden items-center gap-2 dark:flex">
-              <SunIcon class="size-4" />
-              Light
-            </span>
-
-            <span class="flex items-center gap-2 dark:hidden">
-              <MoonIcon class="size-4" />
-              Dark
-            </span>
-          </button>
-        )
-      }
-
-      <!-- Mobile menu toggle -->
-      <button
-        id="menu-toggle"
-        type="button"
-        class="sm:hidden inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-muted/70 text-muted-foreground hover:text-accent transition-colors duration-150"
-        aria-label="Toggle navigation"
-        aria-expanded="false"
-        aria-controls="mobile-nav"
-      >
-        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
-          <line x1="2" y1="4" x2="13" y2="4" />
-          <line x1="2" y1="7.5" x2="13" y2="7.5" />
-          <line x1="2" y1="11" x2="13" y2="11" />
-        </svg>
-      </button>
     </div>
   </div>
 </header>
@@ -100,14 +110,15 @@ function isActive(url: string) {
 <script>
   function initMobileNav() {
     const toggle = document.getElementById('menu-toggle');
-    const nav = document.getElementById('mobile-nav');
-    if (!toggle || !nav) return;
+    const drawer = document.getElementById('mobile-drawer');
+    if (!toggle || !drawer) return;
 
     toggle.addEventListener('click', () => {
       const isOpen = toggle.getAttribute('aria-expanded') === 'true';
-      toggle.setAttribute('aria-expanded', String(!isOpen));
-      nav.classList.toggle('hidden', isOpen);
-      nav.classList.toggle('flex', !isOpen);
+      const next = !isOpen;
+      toggle.setAttribute('aria-expanded', String(next));
+      drawer.classList.toggle('open', next);
+      drawer.setAttribute('aria-hidden', String(!next));
     });
   }
 
@@ -119,70 +130,106 @@ function isActive(url: string) {
   .site-header {
     position: sticky;
 
-    /* Subtle shadow appears after scrolling */
     animation: header-shadow linear both;
     animation-timeline: scroll();
     animation-range: 0px 1px;
   }
 
   @keyframes header-shadow {
-    from {
-      box-shadow: none;
-    }
-
+    from { box-shadow: none; }
     to {
       box-shadow:
         0 1px 12px 0
-        color-mix(
-          in srgb,
-          var(--foreground) 8%,
-          transparent
-        );
+        color-mix(in srgb, var(--foreground) 8%, transparent);
     }
   }
 
-  /* Reading progress */
-  /* .site-header::after {
-    opacity: 0;
-    content: "";
+  /* ── Theme pill ────────────────────────────────────── */
+  .theme-pill {
+    width: 36px;
+    height: 20px;
+    border-radius: 10px;
+    border: 0.5px solid var(--border);
+    background: var(--muted);
+    position: relative;
+    flex-shrink: 0;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .theme-pill::after {
+    content: '';
     position: absolute;
-    left: 0;
-    bottom: -2px;
-    width: 100%;
-    height: 3px;
-    background: color-mix(
-      in srgb,
-      var(--accent) 75%,
-      transparent
-    );
-
-    transform-origin: left;
-    transform: scaleX(0);
-    animation:
-      reading-progress linear,
-      progress-fade linear;
-    animation-timeline: scroll();
-    animation-range: 0 100%;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--foreground);
+    border: 0.5px solid var(--muted-foreground);
+    transition: transform 0.18s ease, background 0.18s;
   }
 
-  @keyframes reading-progress {
-    from {transform: scaleX(0);}
-    to {transform: scaleX(1);}
-  }
-  @keyframes progress-fade {
-    0% {opacity: 0;}
-    2%,
-    100% {opacity: 1;}
+  [data-theme="dark"] .theme-pill {
+    background: var(--muted-foreground);
+    border-color: var(--muted-foreground);
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .site-header,
-    .site-header::after {
-      animation: none;
-    }
+  html[data-theme="dark"] .theme-pill::after {
+  /* [data-theme="dark"] .theme-pill::after { */
+    transform: translateX(16px);
+    background: var(--foreground);
+  }
 
-    .site-header::after {
-      opacity: 0;
-    }
-  } */
+  /* ── Mobile drawer ─────────────────────────────────── */
+  .mobile-drawer {
+    background: var(--background);
+    border-bottom: 1px solid var(--border);
+    box-shadow:
+      0 4pt 24pt
+      color-mix(in srgb, var(--foreground) 5%, transparent);
+    /* box-shadow: 0 4pt 24pt rgba(0,0,0,0.05); */
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+  }
+
+  .mobile-drawer.open {
+    max-height: 400px;
+  }
+
+  /* ── Mobile nav items ──────────────────────────────── */
+  .mobile-nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.875rem 1rem;
+    border-bottom: 0.5px solid var(--border);
+    font-family: var(--font-content);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--muted-foreground);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .mobile-nav-item:last-child {
+    border-bottom: none;
+  }
+
+  .mobile-nav-item:hover,
+  .mobile-nav-item[aria-current="page"] {
+    color: var(--accent);
+  }
+
+  .mobile-nav-arrow {
+    font-style: normal;
+    font-size: 13px;
+    color: var(--muted-foreground);
+    transition: color 0.15s;
+  }
+
+  .mobile-nav-item:hover .mobile-nav-arrow,
+  .mobile-nav-item[aria-current="page"] .mobile-nav-arrow {
+    color: var(--accent);
+  }
 </style>

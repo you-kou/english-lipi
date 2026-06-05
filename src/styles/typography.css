@@ -42,7 +42,7 @@
      ========================================= */
 
   .app-prose :where(p, ul, ol, blockquote, table) {
-    @apply text-foreground leading-normal;
+    @apply text-foreground leading-relaxed;
   }
 
   /* Constrain measure for comfortable reading (~68 chars/line) */
@@ -200,7 +200,7 @@
     .post-content > p:first-of-type::first-letter {
       @apply text-accent font-display font-semibold;
       initial-letter: 3;
-      margin-inline-end: 0.12em;
+      margin-inline-end: 0.25em;
     }
   }
 }

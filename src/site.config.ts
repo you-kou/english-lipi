@@ -22,6 +22,7 @@ export interface UserConfig {
   defaultOGImage?: string;
 
   navigation?: NavItem[];
+  footerLinks?: NavItem[];
   social?: SocialItem[];
 
   footerCredits?: string;
@@ -49,7 +50,10 @@ const siteConfig = {
   ogImage: userConfig.defaultOGImage ?? "/og.jpg",
 
   navigation: userConfig.navigation ?? [],
+  footerLinks: userConfig.footerLinks ?? [],
   social: userConfig.social ?? [],
+
+  footerCredits: userConfig.footerCredits,
 
   postsPerPage: userConfig.postsPerPage ?? 8,
   recentPosts: userConfig.recentPosts ?? 6,

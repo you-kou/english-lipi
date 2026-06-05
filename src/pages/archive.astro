@@ -1,7 +1,7 @@
 ---
 import PageLayout from "@/layouts/PageLayout.astro";
-import { getAllPosts, getPostUrl, type Post } from "@/utils/content";
-import { slugify } from "@/utils/text";
+import { getAllPosts, type Post } from "@/utils/content";
+import ArchiveItem from "@/components/content/ArchiveItem.astro";
 
 const allPosts = await getAllPosts();
 
@@ -33,6 +33,27 @@ function formatDay(date: Date) {
 
 <PageLayout title="Archive" description="A chronological archive of all writings">
   <!-- Filter bar -->
+  <div
+    class="archive-controls mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+    data-pagefind-ignore
+  >
+    <input
+      id="archive-search"
+      type="search"
+      placeholder="Search titles..."
+      class="w-full sm:w-72 rounded border border-border bg-background px-3 py-2 text-sm"
+    />
+
+    <label
+      class="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer"
+    >
+      <input
+        id="english-only"
+        type="checkbox"
+      />
+      <span>English only</span>
+    </label>
+  </div>
   <nav
     id="archive-filters"
     class="mb-10 flex flex-wrap gap-x-4 gap-y-2 font-ui"
@@ -80,42 +101,13 @@ function formatDay(date: Date) {
               const isInitiallyHidden = index >= INITIAL_PER_YEAR;
               return (
                 <li
-                  class="archive-item mb-1"
+                  class="archive-item"
                   data-tags={tags}
+                  data-title={post.data.title.toLowerCase()}
+                  data-lang={post.data.lang ?? "en"}
                   hidden={isInitiallyHidden}
                 >
-                  <a
-                    href={getPostUrl(post.id, post.filePath)}
-                    class="archive-link group flex items-baseline sm:items-center gap-6 sm:gap-8 py-1.5 no-underline text-foreground"
-                  >
-                    <div class="archive-meta flex items-baseline sm:items-center gap-1.5 sm:gap-2 shrink-0">
-                      <time
-                        datetime={post.data.published.toISOString()}
-                        class="font-code text-sm uppercase tabular-nums text-muted-foreground"
-                      >
-                        {formatDay(post.data.published)}
-                      </time>
-                      {post.data.category && (
-                        <>
-                          <span
-                            class="text-muted-foreground text-sm"
-                            aria-hidden="true"
-                          >
-                            ·
-                          </span>
-                          <span class="font-ui text-sm text-muted-foreground">
-                            {post.data.category}
-                          </span>
-                        </>
-                      )}
-                    </div>
-                    <span
-                      class="archive-title font-content text-lg leading-snug transition-colors duration-200 group-hover:text-accent"
-                      transition:name={slugify(post.data.title.replaceAll(".", "-"))}
-                    >
-                      {post.data.title}
-                    </span>
-                  </a>
+                  <ArchiveItem post={post} />
                 </li>
               );
             })}
@@ -190,6 +182,14 @@ function formatDay(date: Date) {
       width: auto;
     }
   }
+
+  .archive-controls input[type="search"] {
+    outline: none;
+  }
+
+  .archive-controls input[type="search"]:focus {
+    border-color: var(--accent);
+  }
 </style>
 
 <script>
@@ -202,6 +202,31 @@ function formatDay(date: Date) {
       document.querySelectorAll<HTMLElement>(".year-section");
 
     const expandedYears = new Set<string>();
+    
+    const searchInput =
+      document.getElementById("archive-search");
+
+    searchInput?.addEventListener("input", (e) => {
+      searchQuery = (
+        e.currentTarget as HTMLInputElement
+      ).value
+        .trim()
+        .toLowerCase();
+
+      updateVisibility(activeFilter);
+    });
+
+    const englishToggle = document.getElementById("english-only") as HTMLInputElement | null;
+    let searchQuery = "";
+    let englishOnly = false;
+
+    englishToggle?.addEventListener("change", (e) => {
+      englishOnly = (
+        e.currentTarget as HTMLInputElement
+      ).checked;
+
+      updateVisibility(activeFilter);
+    });
 
     // Read initial filter from URL
     const params = new URLSearchParams(window.location.search);
@@ -251,10 +276,31 @@ function formatDay(date: Date) {
       });
     }
 
-    function matchesFilter(item: HTMLElement, filter: string): boolean {
-      if (filter === "all") return true;
+    function matchesFilters(
+      item: HTMLElement,
+      filter: string
+    ): boolean {
       const tags = item.dataset.tags ?? "";
-      return tags.split(" ").includes(filter);
+      const title = item.dataset.title ?? "";
+      const lang = item.dataset.lang ?? "en";
+
+      const tagMatch =
+        filter === "all" ||
+        tags.split(" ").includes(filter);
+
+      const searchMatch =
+        searchQuery === "" ||
+        title.includes(searchQuery);
+
+      const languageMatch =
+        !englishOnly ||
+        lang === "en";
+
+      return (
+        tagMatch &&
+        searchMatch &&
+        languageMatch
+      );
     }
 
     function updateVisibility(filter: string) {
@@ -265,7 +311,9 @@ function formatDay(date: Date) {
           ...section.querySelectorAll<HTMLElement>(".archive-item"),
         ];
 
-        const matching = items.filter((item) => matchesFilter(item, filter));
+        const matching = items.filter((item) =>
+          matchesFilters(item, filter)
+        );
         const limit = isExpanded ? matching.length : INITIAL_PER_YEAR;
 
         // Reset all, then reveal matching items up to limit

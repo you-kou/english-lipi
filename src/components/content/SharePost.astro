@@ -22,19 +22,16 @@ const shareLinks = [
 ];
 ---
 
-<section class="space-y-2 pt-8">
-  <p class="font-ui text-sm text-muted-foreground">
-    Enjoyed this article?
-  </p>
-
-  <div class="flex flex-wrap items-center gap-4 text-sm font-ui">
-    <button
-      id="copy-link"
-      type="button"
-      class="text-muted-foreground hover:text-foreground lowercase inline-flex min-h-10 items-center transition-[color,transform] duration-150"
-    >
-      Copy Link →
-    </button>
+<section class="flex flex-row mt-4 gap-2 text-muted-foreground text-sm font-ui items-baseline">
+  <button
+    id="copy-link"
+    type="button"
+    class="hover:text-foreground hover:underline items-center transition-[color,transform] duration-150"
+  >
+    Copy Link
+  </button>
+  <!-- <div class="flex items-center gap-4 text-sm font-ui"> -->
+    
     <!-- {shareLinks.map((link) => (
       <a
         href={link.href}
@@ -45,7 +42,7 @@ const shareLinks = [
         {link.label}
       </a>
     ))} -->
-  </div>
+  <!-- </div> -->
 </section>
 
 <script>
