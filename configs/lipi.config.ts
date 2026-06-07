@@ -17,6 +17,13 @@ const userConfig: UserConfig = {
     { title: "About", url: "/about" },
   ],
 
+  footerLinks: [
+    { title: "RSS", url: "/rss.xml" },
+    { title: "Archive", url: "/archive" },
+    { title: "Source", url: "https://github.com/ak0r/lipi" },
+    
+  ],
+
   social: [
     {
       title: "GitHub",
@@ -36,7 +43,7 @@ const userConfig: UserConfig = {
     
   ],
 
-  footerCredits: "Built with Astro & Lipi",
+  footerCredits: "Designed for reading. Built with Astro & Lipi",
 
   postsPerPage: 8,
   recentPosts: 6,

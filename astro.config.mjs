@@ -49,7 +49,7 @@ export default defineConfig({
       formats: ["woff", "ttf"],
     },
     {
-      name: "Noto Serif",
+      name: "Source Serif 4",
       cssVariable: "--font-lipi-serif",
       provider: fontProviders.google(),
       weights: [300, 400, 500, 600, 700],
@@ -57,7 +57,7 @@ export default defineConfig({
       formats: ["woff", "ttf"],
     },
     {
-      name: "Noto Sans Mono",
+      name: "JetBrains Mono",
       cssVariable: "--font-lipi-mono",
       provider: fontProviders.google(),
       weights: [ 400, 500, 600, 700],
@@ -65,7 +65,7 @@ export default defineConfig({
       formats: ["woff", "ttf"],
     },
     {
-      name: "Shippori Mincho",
+      name: "Lora",
       cssVariable: "--font-lipi-display",
       provider: fontProviders.google(),
       weights: [ 400, 500, 600, 700],

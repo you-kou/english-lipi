@@ -1,0 +1,95 @@
+---
+import { getPostUrl, type Post } from "@/utils/content";
+import { slugify } from "@/utils/text";
+
+type Props = {
+  post: Post;
+};
+
+const { post } = Astro.props;
+
+const displayDate = new Intl.DateTimeFormat("en", {
+  month: "short",
+  year: "numeric",
+}).format(post.data.updated ?? post.data.published);
+---
+
+<a
+  href={getPostUrl(post.id, post.filePath)}
+  class="archive-link group py-2 "
+>
+  <span
+    class="archive-title"
+    transition:name={slugify(
+      post.data.title.replaceAll(".", "-")
+    )}
+  >
+    {post.data.title}
+  </span>
+
+  <div class="archive-meta">
+    {post.data.category && (
+      <span>{post.data.category}</span>
+    )}
+
+    <time
+      datetime={post.data.published.toISOString()}
+    >
+      {displayDate}
+    </time>
+
+    {post.data.lang && (
+      <span class="uppercase">
+        {post.data.lang}
+      </span>
+    )}
+  </div>
+</a>
+
+<style>
+  .archive-link {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .archive-title {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    line-height: 1.4;
+  }
+
+  .archive-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+
+    font-size: .75rem;
+    color: var(--muted-foreground);
+  }
+
+  .archive-meta > * + *::before {
+    content: "·";
+    margin-right: .5rem;
+  }
+
+  @media (min-width: 640px) {
+    .archive-link {
+      display: grid;
+      grid-template-columns:
+        minmax(0,1fr)
+        auto;
+
+      align-items: baseline;
+      gap: 2rem;
+    }
+
+    .archive-meta {
+      white-space: nowrap;
+      justify-content: flex-end;
+    }
+  }
+</style>

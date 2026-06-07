@@ -64,13 +64,13 @@ const ogImage = entry
     {showBreadcrumb && <Breadcrumb />}
     <PageHeader {title} subheading={description} transitionName={transitionName} >
       {formattedDate && (
-        <div slot="meta">
-          <span class="text-muted-foreground text-sm font-code">Updated {formattedDate}</span>
+        <div slot="meta" class="">
+          <span class="text-muted-foreground text-xs font-code">Updated {formattedDate}</span>
         </div>
       )}
     </PageHeader>
   </Fragment>
-  <section class="my-8">
+  <section class="mb-4">
     <slot />
   </section>
 </BaseLayout>

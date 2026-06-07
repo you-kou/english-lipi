@@ -10,6 +10,7 @@ import SEO from "@/components/SEO.astro";
 import PostFeed from "@/components/content/PostFeed.astro";
 import PostNavigation from "@/components/content/PostNavigation.astro";
 import { generatePostSchema } from "@/utils/schema";
+import PostFeedMeta from "@/components/content/PostFeedMeta.astro";
 
 type Props = {
   post: Post;
@@ -43,17 +44,7 @@ const { title, description, cover, published, updated, tags } = post.data;
 
 const allPosts    = await getAllPosts();
 const relatedPosts = getRelatedPosts(post, allPosts, siteConfig.relatedPosts);
-
-const updatedDate = updated
-  ? formatDate(updated)
-  : formatDate(published);
-
-const section = post.data.category ?? "Posts";
-const readTime    = calculateReadingTime(post.body ?? "").text;
-const showReadingTime = siteConfig.showReadingTime || false;
-
 const ogImage = `/og/posts/${getPostSlug(post.id, post.filePath)}.png`;
-
 const structuredData = generatePostSchema(post);
 ---
 
@@ -70,74 +61,32 @@ const structuredData = generatePostSchema(post);
   <Fragment slot="header">
     <Breadcrumb />
     <!-- Post Header -->
-    <header class="space-y-4">
-      <!-- Context -->
-      <div class="text-muted-foreground flex flex-wrap items-center gap-3 text-xs font-medium tracking-widest mb-1 sm:mb-2">
-        <span>{section}</span>
-      </div>
+    <header class="space-y-3">
 
       <!-- Title -->
-      <div class="space-y-4">
-        <h1 
-          class="font-display text-foreground text-4xl sm:text-5xl sm:mt-0 leading-normal tracking-tight"
+      <h1 
+          class="font-display text-3xl leading-tight font-medium md:text-4xl"
           transition:name={slugify(post.data.title.replaceAll(".", "-"))}
-        >
+      >
           {post.data.title}
-        </h1>
+      </h1>
 
-        {
-          post.data.description && (
-            <p class="text-muted-foreground max-w-2xl text-sm sm:text-base leading-snug">
-              {post.data.description}
-            </p>
-          )
-        }
-      </div>
+      <!-- Description -->
+      {
+        post.data.description && (
+          <p class="max-w-xl text-base leading-relaxed text-muted-foreground">
+            {post.data.description}
+          </p>
+        )
+      }
 
       <!-- Metadata -->
-      <div class="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-2 mt-8 text-sm">
-        <span>
-          {post.data.author ?? `${siteConfig.author}`}
-        </span>
+      <PostFeedMeta
+        post={post}
+        showReadingTime
+        accentCategory
+      />
 
-        <span aria-hidden="true">·</span>
-
-        <time datetime={post.data.published.toISOString()}>
-          {updatedDate}
-        </time>
-
-        {
-          showReadingTime && (
-            <>
-              <span aria-hidden="true">
-                ·
-              </span>
-              <span>
-                {readTime}
-              </span>
-            </>
-          )
-        }
-      </div>
-
-      <!-- Tags -->
-      {
-        post.data.tags &&
-          post.data.tags.length > 0 && (
-            <div class="flex flex-wrap items-center gap-3">
-              {post.data.tags.map(
-                (tag) => (
-                  <a
-                    href={`/tags/${slugify(tag)}`}
-                    class="text-xs font-ui text-muted-foreground hover:text-accent transition-colors no-underline"
-                  >
-                    {tag}
-                  </a>
-                )
-              )}
-            </div>
-          )
-      }
       <div class="divider" />
     </header>
   </Fragment>
@@ -162,24 +111,43 @@ const structuredData = generatePostSchema(post);
           </div>
         )
       }
-    <article data-pagefind-body>
-    <meta data-pagefind-meta="title[content]" content={title} />
-    <meta data-pagefind-sort="date[content]" content={published.toISOString()} />
+    <article data-pagefind-body class="flex flex-col space-y-2">
+      <meta data-pagefind-meta="title[content]" content={title} />
+      <meta data-pagefind-sort="date[content]" content={published.toISOString()} />
 	    <meta data-pagefind-filter="collection[content]" content={post.collection} />
-    {tags?.map((tag) => (
-      <meta data-pagefind-filter="tag[content]" content={tag} />
-    ))}
-    <!-- Content -->
+      {tags?.map((tag) => (
+        <meta data-pagefind-filter="tag[content]" content={tag} />
+      ))}
+      <!-- Content -->
 	    <div class="app-prose post-content">
 	      <slot />
 	    </div>
-      <div class="section-divider flex items-center justify-center gap-4 text-muted-foreground mt-4 text-xl" aria-hidden="true">
+      <div class="section-divider flex items-center justify-center gap-4 text-muted-foreground my-8 text-xl" aria-hidden="true">
         <span>·</span>
         <span>·</span>
         <span>·</span>
       </div>
 	  </article>
+    <!-- Tags -->
+      {
+        post.data.tags &&
+          post.data.tags.length > 0 && (
+            <div class="flex flex-wrap items-center gap-3">
+              {post.data.tags.map(
+                (tag) => (
+                  <a
+                    href={`/tags/${slugify(tag)}`}
+                    class="text-sm underline font-ui text-muted-foreground hover:text-accent transition-colors"
+                  >
+                    {tag}
+                  </a>
+                )
+              )}
+            </div>
+          )
+      }
     <SharePost title={post.data.title} />
+    <div class="divider" />
   </section>
   
   <Fragment slot="navigation">
@@ -192,8 +160,8 @@ const structuredData = generatePostSchema(post);
     {relatedPosts.length > 0 && (
       <PostFeed
         posts={relatedPosts}
-        variant="archive"
-        sectionTitle="Related"
+        variant="timeline"
+        sectionTitle="Related Reading"
       />
     )}
   </Fragment>

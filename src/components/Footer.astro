@@ -2,32 +2,35 @@
 import siteConfig from "@/site.config";
 ---
 
-<footer class="border-border mt-20 border-t py-8 ">
+<footer class="border-border mt-12 border-t py-8 ">
   <div class="app-layout">
-    <div class="flex flex-col items-center justify-between gap-4 text-sm sm:flex-row sm:items-center">
+    <div class="flex flex-col items-center justify-between gap-4 text-sm sm:flex-row sm:items-start">
       <!-- Copyright -->
-      <div class="order-last">
-        <p class="text-muted-foreground font-code tabular-nums">
+      <div class="order-last flex flex-col sm:text-left text-center text-muted-foreground gap-2">
+        <p class="font-code tabular-nums">
         &copy; {new Date().getFullYear()}{" "}
         {siteConfig.author}
+        </p>
+        <p class="text-muted-foreground/70">
+          {siteConfig.footerCredits}
         </p>
       </div>
 
       <!-- Social Links -->
       {
-        siteConfig.social.length > 0 && (
-          <div class="order-1">
+        siteConfig.footerLinks.length > 0 && (
+          <div class="sm:order-last">
             <nav
               aria-label="Social links"
-              class="flex flex-wrap text-sm font-code items-center gap-4"
+              class="flex flex-wrap text-sm font-code gap-4"
             >
-              {siteConfig.social.map((item) => (
+              {siteConfig.footerLinks.map((item) => (
                 <a
                   href={item.url}
                   target="_blank"
                   rel="noopener noreferrer me"
                   aria-label={`${item.title} (opens in new tab)`}
-                  class="text-muted-foreground hover:text-foreground lowercase transition-colors"
+                  class="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {item.title}
                 </a>
