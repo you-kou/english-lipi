@@ -95,11 +95,12 @@ function isActive(url: string) {
         siteConfig.navigation.map((item) => (
           <a
             href={item.url}
-            class="mobile-nav-item  tracking-wide" 
+            class="flex items-center justify-between px-4 py-3.5 border-b border-border 
+              font-ui text-base text-muted-foreground link-hover aria-[current=page]:text-primary
+              last:border-b-0"
             aria-current={isActive(item.url) ? "page" : undefined}
           >
             <span>{item.title}</span>
-            <span class="mobile-nav-arrow" aria-hidden="true">›</span>
           </a>
         ))
       }
@@ -197,39 +198,4 @@ function isActive(url: string) {
     max-height: 400px;
   }
 
-  /* ── Mobile nav items ──────────────────────────────── */
-  .mobile-nav-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.875rem 1rem;
-    border-bottom: 0.5px solid var(--border);
-    font-family: var(--font-ui);
-    font-style: italic;
-    font-size: 15px;
-    color: var(--muted-foreground);
-    text-decoration: none;
-    transition: color 0.15s;
-  }
-
-  .mobile-nav-item:last-child {
-    border-bottom: none;
-  }
-
-  .mobile-nav-item:hover,
-  .mobile-nav-item[aria-current="page"] {
-    color: var(--color-primary);
-  }
-
-  .mobile-nav-arrow {
-    font-style: normal;
-    font-size: 13px;
-    color: var(--muted-foreground);
-    transition: color 0.15s;
-  }
-
-  .mobile-nav-item:hover .mobile-nav-arrow,
-  .mobile-nav-item[aria-current="page"] .mobile-nav-arrow {
-    color: var(--color-primary);
-  }
 </style>

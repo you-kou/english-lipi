@@ -220,7 +220,7 @@ html {
   }
 
   .gallery-item {
-    @apply block overflow-hidden bg-background cursor-zoom-in rounded-sm ring ring-border shadow-sm;
+    @apply block overflow-hidden bg-background cursor-zoom-in rounded-sm ring ring-border;
     transition: box-shadow 0.2s ease;
     &:hover { @apply shadow-md; }
   }

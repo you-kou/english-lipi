@@ -88,9 +88,7 @@
      ========================================= */
 
   .app-prose :where(img) {
-    @apply rounded-sm;
-    outline: 1px solid rgba(0, 0, 0, 0.1);
-    outline-offset: -1px;
+    @apply rounded-sm;    
     margin-block: 0;
   }
 
